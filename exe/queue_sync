@@ -37,7 +37,7 @@ class FileLister
 
   def post_process list_of_files
     is_hidden = ->(f){f.match(/\/\..*/)}
-    list_of_files.split("\n").map{|file| file.gsub(dir, "./").gsub(/^.\//, "")}.reject(&is_hidden)
+    list_of_files.split("\n").reject(&is_hidden).map{|file| file.gsub(dir, "./").gsub(/^.\//, "")}
   end
 end
 
