@@ -24,7 +24,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+The script can be used as follows
+
+`queue_sync <src_path> <dest_host> <dest_port> <dest_path>`
+
+Where the `src_path` and `dest_path` are paths to the folder to be synced on the source and consumer respectively, and `dest_host` and `dest_port` are the host to ssh to and the port to use for connection.
+
+I keep a wrapper which hardcodes all the parameters which might stay constant and just reads the `dest_host` from the console since that changes often. This wrapper then calls `queue_sync` appropriately.
 
 ## Development
 
