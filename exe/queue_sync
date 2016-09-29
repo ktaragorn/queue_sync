@@ -91,12 +91,12 @@ def delete_remote_deleted_files src_path, list
   end
 end
 
-def rsync_push_new_files src, dest
+def rsync_push_new_files! src, dest
   # ignore existing to optimize for android transfer where i think modification time or something is not being set
   # Files are not expected to be modified on the remote, so this should suffice
   # -W to optimize for large files
   # exclude dot files and folders -http://askubuntu.com/a/482920/92812
-  system("rsync -rvzWh --exclude \".*\" --exclude \".*/\" --ignore-existing --progress -e \"ssh -p #{dest.port}\" \"#{src}\" \"#{dest.host}:#{dest.path}\"")
+  system("rsync -rvzWh --exclude \".*\" --exclude \".*/\" --ignore-existing --progress -e \"ssh -p #{dest.port}\" \"#{src}\" \"#{dest.host}:#{dest.path}\"") or raise "rsync command failed or returned an error"
 end
 
 def current_list_local path
@@ -109,6 +109,6 @@ lsl = LastSyncList.new(src_path)
 list_at_last_sync = lsl.read
 
 delete_remote_deleted_files(src_path, list_at_last_sync - current_list_remote(dest))
-rsync_push_new_files(src_path, dest)
+rsync_push_new_files!(src_path, dest)
 
 lsl.write(current_list_local(src_path))
