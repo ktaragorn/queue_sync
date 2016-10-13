@@ -87,7 +87,11 @@ def delete_remote_deleted_files src_path, list
     src    = File.join(src_path, file)
     target = File.join(del_folder, file)
     FileUtils.mkdir_p(File.dirname(target))
-    File.rename(src, target)
+    begin
+      File.rename(src, target)
+    rescue Errno::ENOENT => e
+       puts "Error while deleting #{src} - #{e.message}"
+    end
   end
 end
 
@@ -108,7 +112,9 @@ lsl = LastSyncList.new(src_path)
 
 list_at_last_sync = lsl.read
 
-delete_remote_deleted_files(src_path, list_at_last_sync - current_list_remote(dest))
+deleted = list_at_last_sync - current_list_remote(dest)
+delete_remote_deleted_files(src_path, deleted)
+lsl.write(list_at_last_sync - deleted) # in case rsync fails, delete should not repeat
 rsync_push_new_files!(src_path, dest)
 
 lsl.write(current_list_local(src_path))
