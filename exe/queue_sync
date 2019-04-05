@@ -12,11 +12,16 @@ class LastSyncList
   def read
     File.readlines(@file).map(&:chomp)
   rescue Errno::ENOENT
+    @is_new = true
     []
   end
 
   def write list
     File.write(@file, Array(list).join("\n"))
+  end
+
+  def new?
+    @is_new
   end
 end
 
@@ -113,7 +118,7 @@ lsl = LastSyncList.new(src_path)
 list_at_last_sync = lsl.read
 
 deleted = list_at_last_sync - current_list_remote(dest)
-delete_remote_deleted_files(src_path, deleted)
+delete_remote_deleted_files(src_path, deleted) unless lsl.new?
 lsl.write(list_at_last_sync - deleted) # in case rsync fails, delete should not repeat
 rsync_push_new_files!(src_path, dest)
 
