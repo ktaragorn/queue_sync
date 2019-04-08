@@ -105,7 +105,7 @@ def rsync_push_new_files! src, dest
   # Files are not expected to be modified on the remote, so this should suffice
   # -W to optimize for large files
   # exclude dot files and folders -http://askubuntu.com/a/482920/92812
-  system("rsync -rvzzWh --exclude \".*\" --exclude \".*/\" --ignore-existing --progress -e \"ssh -p #{dest.port}\" \"#{src}\" \"#{dest.host}:#{dest.path}\"") or raise "rsync command failed or returned an error"
+  system("rsync -rvWh  --exclude \".*\" --exclude \".*/\" --ignore-existing --progress -e \"ssh -p #{dest.port}\" \"#{src}\" \"#{dest.host}:#{dest.path}\"") or raise "rsync command failed or returned an error"
 end
 
 def current_list_local path
